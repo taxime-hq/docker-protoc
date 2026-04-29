@@ -59,7 +59,7 @@ RUN git clone --depth 1 --shallow-submodules -b v$grpc_version.x --recursive htt
 ARG bazel=/tmp/grpc/tools/bazel
 
 WORKDIR /tmp/grpc
-RUN $bazel build //external:protocol_compiler && \
+RUN $bazel build @com_google_protobuf//:protoc && \
     $bazel build //src/compiler:all && \
     $bazel build //test/cpp/util:grpc_cli
 
