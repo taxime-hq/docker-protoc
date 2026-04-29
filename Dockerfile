@@ -100,7 +100,7 @@ RUN go install github.com/micro/micro/v3/cmd/protoc-gen-micro@latest
 RUN go install github.com/envoyproxy/protoc-gen-validate@v${go_envoyproxy_pgv_version}
 
 # Add Ruby Sorbet types support (rbi)
-RUN go install github.com/coinbase/protoc-gen-rbi@latest
+RUN go install github.com/sorbet/protoc-gen-rbi@latest
 
 RUN go install github.com/gomatic/renderizer/v2/cmd/renderizer@latest
 
