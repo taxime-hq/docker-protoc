@@ -35,6 +35,7 @@ ARG protobuf_js_version
 
 
 RUN set -ex && apt-get update && apt-get install -y --no-install-recommends \
+    -o Acquire::Retries=3 \
     build-essential \
     pkg-config \
     cmake \
@@ -138,6 +139,7 @@ ARG go_mwitkow_gpv_version
 
 RUN mkdir -p /usr/share/man/man1
 RUN set -ex && apt-get update && apt-get install -y --no-install-recommends \
+    -o Acquire::Retries=3 \
     bash \
     curl \
     software-properties-common \
