@@ -34,8 +34,8 @@ ARG mypy_version
 ARG protobuf_js_version
 
 
+RUN echo 'Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries
 RUN set -ex && apt-get update && apt-get install -y --no-install-recommends \
-    -o Acquire::Retries=3 \
     build-essential \
     pkg-config \
     cmake \
@@ -138,8 +138,8 @@ ARG go_envoyproxy_pgv_version
 ARG go_mwitkow_gpv_version
 
 RUN mkdir -p /usr/share/man/man1
+RUN echo 'Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries
 RUN set -ex && apt-get update && apt-get install -y --no-install-recommends \
-    -o Acquire::Retries=3 \
     bash \
     curl \
     software-properties-common \
