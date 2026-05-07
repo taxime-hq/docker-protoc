@@ -409,14 +409,6 @@ plugins=grpc+embedded\
             GEN_STRING="$GEN_STRING --ts_proto_opt=$TYPESCRIPT_OPT"
         fi
         ;;
-    "objc")
-        # headers_use_forward_declarations=yes restores pre-protobuf-v30 behavior:
-        # cross-proto types (e.g. google.type.Money) emit as @class forward
-        # declarations in the .h instead of hard #import statements. The option is
-        # marked deprecated upstream but still works as of v30 and is required until
-        # we ship a shared googleapis-objc pod.
-        GEN_STRING="--grpc_out=$OUT_DIR --objc_out=$OUT_DIR --objc_opt=headers_use_forward_declarations=yes --plugin=protoc-gen-grpc=$(which grpc_objective_c_plugin)"
-        ;;
     *)
         GEN_STRING="--grpc_out=$OUT_DIR --${GEN_LANG}_out=$OUT_DIR --plugin=protoc-gen-grpc=$(which grpc_${PLUGIN_LANG}_plugin)"
         ;;
