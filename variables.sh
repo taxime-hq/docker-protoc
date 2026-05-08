@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
-BUILDS=("protoc-all" "protoc" "prototool" "grpc-cli" "gen-grpc-gateway")
+if [ -z "${BUILDS+x}" ]; then
+    BUILDS=("protoc-all" "protoc" "prototool" "grpc-cli" "gen-grpc-gateway")
+fi
 DOCKER_REPO=${DOCKER_REPO}
 NAMESPACE=${NAMESPACE:-namely}
 CONTAINER=${DOCKER_REPO}${NAMESPACE}
