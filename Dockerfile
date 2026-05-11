@@ -168,6 +168,12 @@ COPY --from=build /tmp/grpc/bazel-grpc/external/com_google_protobuf/src/google/p
 COPY --from=build /tmp/grpc/bazel-bin/external/com_google_protobuf/ /usr/local/bin/
 # Copy protoc default plugins
 COPY --from=build /tmp/grpc/bazel-bin/src/compiler/ /usr/local/bin/
+# grpc 1.74+ renames per-language plugins to grpc_<lang>_plugin_{binary,native,universal}.
+# Restore the plain `grpc_<lang>_plugin` names that entrypoint.sh's `$(which ...)`
+# resolves to — without them, `set -e` kills the script silently on the assignment.
+RUN for p in cpp csharp node objective_c php python ruby; do \
+      ln -sf grpc_${p}_plugin_binary /usr/local/bin/grpc_${p}_plugin; \
+    done
 # Copy protoc java plugin
 COPY --from=build /tmp/grpc-java/bazel-bin/compiler/ /usr/local/bin/
 # Copy protoc js plugin

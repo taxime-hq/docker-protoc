@@ -9,7 +9,7 @@ build:
 .PHONY: build-local
 build-local:
 	NAMESPACE=taxime BUILDS=protoc-all bash ./build.sh
-	@. ./variables.sh && docker tag taxime/protoc-all:$$VERSION taxime/protoc-all:fork
+	@bash -c '. ./variables.sh && docker tag taxime/protoc-all:$$VERSION taxime/protoc-all:fork'
 	@echo "==> Built taxime/protoc-all:fork"
 
 .PHONY: test
