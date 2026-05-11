@@ -142,7 +142,6 @@ RUN echo 'Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries
 RUN set -ex && apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
-    software-properties-common \
     ca-certificates \
     zlib1g \
     libssl3t64 \
