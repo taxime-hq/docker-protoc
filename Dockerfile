@@ -41,7 +41,7 @@ RUN set -ex && apt-get update && apt-get install -y --no-install-recommends \
     cmake \
     curl \
     git \
-    openjdk-17-jre \
+    openjdk-21-jre \
     unzip \
     libtool \
     autoconf \
@@ -145,8 +145,8 @@ RUN set -ex && apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
     ca-certificates \
     zlib1g \
-    libssl3 \
-    openjdk-17-jre \
+    libssl3t64 \
+    openjdk-21-jre \
     dos2unix \
     gawk
 
