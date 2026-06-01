@@ -63,7 +63,10 @@ GO_MODULE_PREFIX=""
 GO_PACKAGE_MAP=""
 GO_PLUGIN="grpc"
 GO_VALIDATOR=false
-GO_GRPC_REQUIRE_UNIMPLEMENTED_SERVERS="require_unimplemented_servers=false"
+# Empty by default — protoc-gen-go-grpc's native default (require_unimplemented_servers=true)
+# applies. Set to "require_unimplemented_servers=false" (e.g. via the CLI flag below)
+# to restore legacy non-strict mode.
+GO_GRPC_REQUIRE_UNIMPLEMENTED_SERVERS=""
 NO_GOOGLE_INCLUDES=false
 DESCR_INCLUDE_IMPORTS=false
 DESCR_INCLUDE_SOURCE_INFO=false
