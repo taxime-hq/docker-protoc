@@ -71,11 +71,21 @@ WORKDIR /tmp/protobuf-javascript
 RUN $bazel build //generator:protoc-gen-js
 
 WORKDIR /tmp
-# Install protoc required by envoyproxy/protoc-gen-validate package
-RUN cp -a /tmp/grpc/bazel-bin/external/com_google_protobuf/. /usr/local/bin/
-# Copy well known proto files required by envoyproxy/protoc-gen-validate package
-RUN mkdir -p /usr/local/include/google/protobuf && \
-    cp -a /tmp/grpc/bazel-grpc/external/com_google_protobuf/src/google/protobuf/. /usr/local/include/google/protobuf/
+# Resolve protobuf's bzlmod canonical external dir. grpc 1.80's Bazel names it
+# `protobuf+`; older toolchains used `protobuf~<ver>` or `com_google_protobuf`.
+# Stage protoc + well-known protos into stable /opt paths so the final-stage
+# COPY (which can't run shell) has a fixed source regardless of the canonical name.
+RUN PB_BIN=$(find /tmp/grpc/bazel-bin/external -maxdepth 1 \( -type d -o -type l \) \
+        \( -name 'protobuf+' -o -name 'protobuf~*' -o -name 'com_google_protobuf' \) | head -1) && \
+    PB_SRC=$(find /tmp/grpc/bazel-grpc/external -maxdepth 1 \( -type d -o -type l \) \
+        \( -name 'protobuf+' -o -name 'protobuf~*' -o -name 'com_google_protobuf' \) | head -1) && \
+    test -n "$PB_BIN" -a -n "$PB_SRC" && \
+    mkdir -p /opt/pb-bin /opt/pb-include/google/protobuf && \
+    cp -a "$PB_BIN/." /opt/pb-bin/ && \
+    cp -a "$PB_SRC/src/google/protobuf/." /opt/pb-include/google/protobuf/ && \
+    cp -a /opt/pb-bin/. /usr/local/bin/ && \
+    mkdir -p /usr/local/include/google/protobuf && \
+    cp -a /opt/pb-include/google/protobuf/. /usr/local/include/google/protobuf/
 
 WORKDIR /tmp
 RUN curl -fsSL "https://github.com/uber/prototool/releases/download/v${uber_prototool_version}/prototool-$(uname -s)-$(uname -m)" \
@@ -162,10 +172,10 @@ RUN npm i -g ts-proto@$ts_proto_version
 COPY --from=build /tmp/googleapis/google/ /opt/include/google
 COPY --from=build /tmp/api-common-protos/google/ /opt/include/google
 
-# Copy well known proto files
-COPY --from=build /tmp/grpc/bazel-grpc/external/com_google_protobuf/src/google/protobuf/ /opt/include/google/protobuf/
+# Copy well known proto files (staged in build stage to a canonical-name-agnostic path)
+COPY --from=build /opt/pb-include/google/protobuf/ /opt/include/google/protobuf/
 # Copy protoc
-COPY --from=build /tmp/grpc/bazel-bin/external/com_google_protobuf/ /usr/local/bin/
+COPY --from=build /opt/pb-bin/ /usr/local/bin/
 # Copy protoc default plugins
 COPY --from=build /tmp/grpc/bazel-bin/src/compiler/ /usr/local/bin/
 # grpc 1.74+ renames per-language plugins to grpc_<lang>_plugin_{binary,native,universal}.
